@@ -13,7 +13,7 @@ class Scenario(Base):
     title = Column(String, nullable=False)
     knowledge_foundation = Column(String, nullable=False)
     guideline = Column(JSONB, nullable=False)
-    user_id = Column(UUID(as_uuid=True), nullable=False)
+    user_id = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     submissions = relationship("Submission", back_populates="scenario")

@@ -11,9 +11,7 @@ python = "^3.10"
 fastapi = { extras = ["standard"], version = ">=0.116.1,<0.117.0" }
 uvicorn = {extras = ["standard"], version = "^0.35.0"}
 pydantic-settings = "^2.10.1"
-pyjwt = "^2.10.1"
 dotenv = "^0.9.9"
-jwt = "^1.4.0"
 sqlalchemy = "^2.0.41"
 alembic = "^1.16.4"
 asyncpg = "^0.30.0"
@@ -28,6 +26,8 @@ greenlet = "^3.2.3"
 openai = "^1.98.0"
 librosa = "^0.11.0"
 assemblyai = "^0.42.0"
+pyjwt = "^2.10.1"
+boto3 = "^1.40.1"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

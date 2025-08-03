@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from typing import List
+from app.core.auth import get_payload
 from app.core.database import get_session
 from app.models.submission import Submission as SubmissionModel
 from app.models.feedback import Feedback as FeedbackModel
@@ -17,7 +18,8 @@ router = APIRouter()
 async def process_submission_async(
     submission_id: uuid.UUID,
     audio_url: str,
-    scenario_id: uuid.UUID
+    scenario_id: uuid.UUID, 
+    auth_payload: dict = Depends(get_payload)
 ):
     """Background task to process audio and generate feedback"""
     from app.core.database import async_session

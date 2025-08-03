@@ -6,6 +6,7 @@ from app.models.feedback import Feedback as FeedbackModel
 from app.schemas.feedback import Feedback
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from app.core.auth import get_payload
 import uuid
 
 router = APIRouter()
@@ -14,6 +15,7 @@ router = APIRouter()
 async def read_feedback(
     submission_id: uuid.UUID,
     session: AsyncSession = Depends(get_session),
+    auth_payload: dict = Depends(get_payload)
 ):
     """Get feedback for a specific submission"""
     stmt = select(FeedbackModel).where(FeedbackModel.submission_id == submission_id)
@@ -29,6 +31,7 @@ async def read_feedback(
 async def get_structured_feedback(
     submission_id: uuid.UUID,
     session: AsyncSession = Depends(get_session),
+    auth_payload: dict = Depends(get_payload)
 ):
     """Get the structured feedback JSON for a submission"""
     stmt = select(FeedbackModel).where(FeedbackModel.submission_id == submission_id)

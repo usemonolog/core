@@ -8,25 +8,27 @@ class FollowUpGenerator:
     @staticmethod
     async def generate(context: str) -> GeneratedGuideline: 
         try: 
-            prompt = f"""{
-  "task": "Validate if user's scenario has enough context. If not, request clarification.",
-  "rules": [
-    "Respond in the user's input language.",
-    "If scenario is vague (e.g., 'I need help with a presentation'), ask 1–3 follow-up questions like:",
-      "- What is the goal of your communication? (e.g., inform, persuade, negotiate)",
-      "- Who is your audience? (role, cultural background, pain points)",
-      "- What are your key challenges? (e.g., nervousness, unclear message)"
-    "formulate questions relevant to the given scenario and context"
-  ],
-  "output_format": {
-    "status": "follow-up-needed | sufficient",
-    "follow_up_questions": ["..."]
-  },
-  "context": "SCENARIO CONTEXT: {context}",
-}."""
+            prompt_dict = {
+    "task": "Validate if user's scenario has enough context. If not, request clarification.",
+    "rules": [
+        "Respond in the user's input language.",
+        "If scenario is vague (e.g., 'I need help with a presentation'), ask 3 follow-up questions like:",
+        "What is the goal of your communication? (e.g., inform, persuade, negotiate)",
+        "Who is your audience? (role, cultural background, pain points)",
+        "What are your key challenges? (e.g., nervousness, unclear message)",
+        "formulate questions relevant to the given scenario and context"
+    ],
+    "output_format": {
+        "status": "follow-up-needed | sufficient",
+        "follow_up_questions": ["..."]
+    },
+    "context": f"SCENARIO CONTEXT: {context}"
+}
+            prompt = json.dumps(prompt_dict, ensure_ascii=False)
 
             response = await LLMService.get_completion(prompt)
             response_text = response.get("text", "").strip()
+            print(f"Parsed response: {response_text}")  
             
             # Try to parse JSON response
             try:

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from app.core.auth import get_payload
 from app.core.database import get_session
 from app.models.submission import Submission as SubmissionModel
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -11,7 +12,8 @@ status_router = APIRouter()
 @status_router.get("/submission/{submission_id}/status")
 async def get_submission_status(
     submission_id: uuid.UUID,
-    session: AsyncSession = Depends(get_session)
+    session: AsyncSession = Depends(get_session),
+    auth_payload: Dict[str, Any] = Depends(get_payload)
 ):
     """Get the processing status of a submission"""
     stmt = select(SubmissionModel).where(SubmissionModel.id == submission_id)
@@ -32,7 +34,8 @@ async def get_submission_status(
 @status_router.get("/submissions/stats/{scenario_id}")
 async def get_scenario_stats(
     scenario_id: uuid.UUID,
-    session: AsyncSession = Depends(get_session)
+    session: AsyncSession = Depends(get_session), 
+    auth_payload: Dict[str, Any] = Depends(get_payload)
 ):
     """Get statistics for submissions in a scenario"""
     
@@ -76,27 +79,3 @@ async def get_scenario_stats(
         "status_breakdown": status_dict,
         "average_audio_score": round(avg_audio_score, 2) if avg_audio_score else None
     }
-
-    """Detailed health check including database connectivity"""
-    try:
-        # Test database connection
-        await session.execute(select(1))
-        
-        # Test OpenAI API key presence
-        from app.core.config import settings
-        openai_configured = bool(settings.OPENAI_API_KEY)
-        assemblyai_configured = bool(settings.ASSEMBLYAI_API_KEY)
-        
-        return {
-            "status": "healthy",
-            "database": "connected",
-            "openai_configured": openai_configured,
-            "assemblyai_configured": assemblyai_configured,
-            "services": {
-                "audio_analysis": assemblyai_configured,
-                "feedback_generation": openai_configured,
-                "guideline_generation": openai_configured
-            }
-        }
-    except Exception as e:
-        raise HTTPException(status_code=503, detail=f"Health check failed: {str(e)}")
