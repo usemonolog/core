@@ -1,11 +1,6 @@
 from pydantic import BaseModel, Json
-from typing import Dict
+from typing import Dict, List
 
 class GeneratedFollowUp(BaseModel):
     status: str  # "follow-up-needed" or "sufficient"
-    follow_up_questions: Json  # List of follow-up questions in JSON format
-
-    class Config:
-        json_encoders = {
-            Json: lambda v: v if isinstance(v, str) else str(v)
-        }
+    follow_up_questions: List[str]  # List of follow-up questions in JSON format

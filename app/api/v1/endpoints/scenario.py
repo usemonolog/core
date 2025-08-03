@@ -3,12 +3,14 @@ from typing import List
 from app.core.auth import get_payload
 from app.core.database import get_session
 from app.models.scenario import Scenario as ScenarioModel
-from app.schemas.scenario import Scenario, ScenarioCreate
+from app.schemas.followup import GeneratedFollowUp
+from app.schemas.scenario import  Scenario, ScenarioCreate
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from sqlalchemy import select
 import uuid
 
+from app.services.followup_generator import FollowUpGenerator
 from app.services.guideline_generator import GuidelineGenerator
 
 router = APIRouter()
@@ -53,7 +55,7 @@ async def create_scenario(
 
 @router.get("/{user_id}", response_model=List[Scenario])
 async def read_scenarios(
-    user_id: uuid.UUID,
+    user_id: str,
     session: AsyncSession = Depends(get_session),
     auth_payload: dict = Depends(get_payload)
 ):
@@ -109,3 +111,15 @@ async def delete_scenario(
     except Exception as e:
         await session.rollback()
         raise HTTPException(status_code=500, detail=f"Failed to delete scenario: {str(e)}")
+    
+    
+@router.post("/validate", response_model=GeneratedFollowUp)
+async def validate_scenario(
+    context: str,
+    session: AsyncSession = Depends(get_session),
+):
+    try:
+        return await FollowUpGenerator.generate(context)
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Validation failed: {str(e)}")

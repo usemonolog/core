@@ -9,7 +9,7 @@ class ScenarioCreate(BaseModel):
 
 class Scenario(BaseModel):
     id: UUID4 
-    user_id: UUID4
+    user_id: str
     title: str
     knowledge_foundation: str
     guideline: Dict[str, str]
@@ -17,4 +17,3 @@ class Scenario(BaseModel):
 
     class Config:
         from_attributes = True
-
