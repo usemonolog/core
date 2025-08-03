@@ -4,7 +4,7 @@ from app.core.auth import get_payload
 from app.core.database import get_session
 from app.models.scenario import Scenario as ScenarioModel
 from app.schemas.followup import GeneratedFollowUp
-from app.schemas.scenario import  Scenario, ScenarioCreate
+from app.schemas.scenario import  ContextValidationRequest, Scenario, ScenarioCreate
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from sqlalchemy import select
@@ -115,11 +115,11 @@ async def delete_scenario(
     
 @router.post("/validate", response_model=GeneratedFollowUp)
 async def validate_scenario(
-    context: str,
+    request: ContextValidationRequest,
     session: AsyncSession = Depends(get_session),
 ):
     try:
-        return await FollowUpGenerator.generate(context)
+        return await FollowUpGenerator.generate(request.context)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Validation failed: {str(e)}")

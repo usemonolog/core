@@ -27,6 +27,7 @@ openai = "^1.98.0"
 librosa = "^0.11.0"
 assemblyai = "^0.42.0"
 pyjwt = "^2.10.1"
+boto3 = "^1.40.1"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
