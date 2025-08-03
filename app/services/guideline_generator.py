@@ -28,7 +28,6 @@ Return your response in this exact JSON format:
         "Active Listening": "How to demonstrate listening and engagement",
         "Handling Objections": "How to address concerns or pushback",
         "Closing Strategy": "How to end the conversation effectively",
-        "Non-verbal Communication": "Body language and vocal considerations"
     }}
 }}
 
